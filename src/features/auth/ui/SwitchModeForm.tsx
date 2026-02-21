@@ -8,7 +8,7 @@ interface Props {
 
 export function SwitchModeForm({ isRegister }: Props) {
   return (
-    <div className="mt-3 text-center">
+    <div className="mt-5 text-center">
       {/* switch mode form */}
       {isRegister ? (
         <div>
@@ -17,7 +17,7 @@ export function SwitchModeForm({ isRegister }: Props) {
             className="underline"
             href={PAGES.LOGIN}
           >
-            Login
+            Sign In
           </Link>
         </div>
       ) : (
@@ -27,7 +27,7 @@ export function SwitchModeForm({ isRegister }: Props) {
             className="underline"
             href={PAGES.REGISTER}
           >
-            Register
+            Sign up
           </Link>
         </div>
       )}

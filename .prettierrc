@@ -24,10 +24,7 @@
     "^@/shared/utils/(.*)$",
     "^@/shared/api/(.*)$",
     "^@/__generated__/(.*)$",
-    "^@/server/(.*)$",
-    "^(?!.*\\.scss$)(../.*)$",
-    "^(?!.*\\.scss$)(./.*)$",
-    ".*\\.scss$"
+    "^[./]"
   ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,

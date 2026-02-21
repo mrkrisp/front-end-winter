@@ -15,11 +15,13 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 type Documents = {
     "mutation Login($data: AuthInput!) {\n  login(data: $data) {\n    accessToken\n    user {\n      email\n      role\n    }\n  }\n}": typeof types.LoginDocument,
+    "mutation Logout {\n  logout\n}": typeof types.LogoutDocument,
     "mutation Register($data: AuthInput!) {\n  register(data: $data) {\n    accessToken\n    user {\n      email\n      role\n    }\n  }\n}": typeof types.RegisterDocument,
     "query GetProfile {\n  profile {\n    email\n    role\n  }\n}": typeof types.GetProfileDocument,
 };
 const documents: Documents = {
     "mutation Login($data: AuthInput!) {\n  login(data: $data) {\n    accessToken\n    user {\n      email\n      role\n    }\n  }\n}": types.LoginDocument,
+    "mutation Logout {\n  logout\n}": types.LogoutDocument,
     "mutation Register($data: AuthInput!) {\n  register(data: $data) {\n    accessToken\n    user {\n      email\n      role\n    }\n  }\n}": types.RegisterDocument,
     "query GetProfile {\n  profile {\n    email\n    role\n  }\n}": types.GetProfileDocument,
 };
@@ -42,6 +44,10 @@ export function graphql(source: string): unknown;
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation Login($data: AuthInput!) {\n  login(data: $data) {\n    accessToken\n    user {\n      email\n      role\n    }\n  }\n}"): (typeof documents)["mutation Login($data: AuthInput!) {\n  login(data: $data) {\n    accessToken\n    user {\n      email\n      role\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation Logout {\n  logout\n}"): (typeof documents)["mutation Logout {\n  logout\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

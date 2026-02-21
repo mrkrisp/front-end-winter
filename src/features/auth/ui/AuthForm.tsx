@@ -2,11 +2,15 @@
 
 import { useMutation } from '@apollo/client/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 
 import { LoginDocument, RegisterDocument } from '@/__generated__/graphql'
+
+import type { IAuthFormInput } from '../types/auth-form.type'
+import { isEmailRegex } from '../utils/is-email.regex'
 
 import { SwitchModeForm } from './SwitchModeForm'
 
@@ -14,24 +18,41 @@ interface Props {
   type: 'login' | 'register'
 }
 
-interface IFormInput {
-  email: string
-  password: string
-}
-
 function AuthForm({ type }: Props) {
   const isRegister = type === 'register'
-  const [authMutation, { data, loading, error }] = useMutation(
-    isRegister ? RegisterDocument : LoginDocument
+  const [authMutation, { loading }] = useMutation(
+    isRegister ? RegisterDocument : LoginDocument,
+    {
+      onCompleted: () => {
+        toast.success(
+          isRegister ? 'Registered successfully' : 'Sign in successfully',
+          {
+            id: 'auth-success'
+          }
+        )
+      },
+      onError: err => {
+        toast.error(err.message, {
+          id: 'auth-error'
+        })
+      }
+    }
   )
-
-  const { register, handleSubmit, reset } = useForm<IFormInput>({
+  
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isValid }
+  } = useForm<IAuthFormInput>({
+    mode: 'onChange',
     defaultValues: {
       email: '',
       password: ''
     }
   })
-  const onSubmitForm: SubmitHandler<IFormInput> = data => {
+
+  const onSubmitForm: SubmitHandler<IAuthFormInput> = data => {
     authMutation({
       variables: {
         data: {
@@ -39,42 +60,66 @@ function AuthForm({ type }: Props) {
           password: data.password
         }
       }
-    }).then(res => {
-      console.log(res)
+    }).finally(() => {
       reset()
     })
   }
 
   return (
     <div className="flex h-screen">
-      <div className="m-auto w-sm rounded-2xl bg-[#8062ee] p-5 text-xl text-white shadow-lg">
-        <h1 className="mb-5 text-center text-4xl font-bold">
-          {isRegister ? 'Register' : 'Login'}
+      <div className="m-auto w-sm rounded-2xl bg-linear-to-tr from-[#8062ee] to-[#a088fc] p-10 text-xl text-white shadow-lg">
+        <h1 className="mb-6 text-center text-4xl font-bold">
+          {isRegister ? 'Sign up' : 'Sign In'}
         </h1>
         <form
-          className="space-y-3"
+          className="space-y-4"
           onSubmit={handleSubmit(onSubmitForm)}
         >
           <Input
-            className="placeholder:text-white/60"
-            {...register('email', { required: true })}
+            {...register('email', {
+              required: 'Email is required!!!',
+              pattern: {
+                value: isEmailRegex,
+                message: 'Invalid email address'
+              }
+            })}
             name="email"
             type="email"
             placeholder="Email..."
+            aria-invalid={!!errors.email}
           />
+          {errors.email && (
+            <p className="text-destructive -mt-1 block text-xs font-semibold">
+              {errors.email.message}
+            </p>
+          )}
+
           <Input
-            className="placeholder:text-white/60"
-            {...register('password', { required: true, minLength: 6 })}
+            {...register('password', {
+              required: 'Password is required!!!',
+              minLength: {
+                value: 6,
+                message: 'Password must be at least 6 characters'
+              }
+            })}
             name="password"
-            type="08122009"
+            type="password"
             placeholder="Password..."
+            aria-invalid={!!errors.password}
           />
+          {errors.password && (
+            <p className="text-destructive -mt-1 block text-xs font-semibold">
+              {errors.password.message}
+            </p>
+          )}
+
           <div className="text-center">
             <Button
               type="submit"
-              disabled={loading}
+              disabled={!isValid || loading}
+              variant={'accent'}
             >
-              {isRegister ? 'Register' : 'Login'}
+              {isRegister ? 'Sign up' : 'Sign In'}
             </Button>
           </div>
         </form>

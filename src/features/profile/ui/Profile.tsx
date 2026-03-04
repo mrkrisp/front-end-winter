@@ -1,6 +1,9 @@
 'use client'
 
 const Profile = () => {
+
+  
+
   return (
     <div>
       <div>Your email: </div>

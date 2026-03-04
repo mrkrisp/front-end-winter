@@ -1,6 +1,0 @@
-query GetProfile {
-  profile {
-    email
-    role
-  }
-}

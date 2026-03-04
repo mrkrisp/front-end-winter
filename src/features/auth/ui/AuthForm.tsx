@@ -1,17 +1,30 @@
 'use client'
 
-import { useMutation } from '@apollo/client/react'
+import { useApolloClient, useMutation } from '@apollo/client/react'
+import { Turnstile } from '@marsidev/react-turnstile'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 
-import { LoginDocument, RegisterDocument } from '@/__generated__/graphql'
+import { PAGES } from '@/shared/config/page.config'
+
+import {
+  GetMeDocument,
+  LoginDocument,
+  LoginMutation,
+  type LoginMutationVariables,
+  RegisterDocument,
+  type RegisterMutation,
+  type RegisterMutationVariables
+} from '@/__generated__/graphql'
 
 import type { IAuthFormInput } from '../types/auth-form.type'
 import { isEmailRegex } from '../utils/is-email.regex'
-
 import { SwitchModeForm } from './SwitchModeForm'
 
 interface Props {
@@ -20,29 +33,44 @@ interface Props {
 
 function AuthForm({ type }: Props) {
   const isRegister = type === 'register'
-  const [authMutation, { loading }] = useMutation(
-    isRegister ? RegisterDocument : LoginDocument,
-    {
-      onCompleted: () => {
-        toast.success(
-          isRegister ? 'Registered successfully' : 'Sign in successfully',
-          {
-            id: 'auth-success'
-          }
-        )
-      },
-      onError: err => {
-        toast.error(err.message, {
-          id: 'auth-error'
-        })
-      }
+  const router = useRouter()
+  const client = useApolloClient()
+
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+
+  const [authMutation, { loading }] = useMutation<
+    LoginMutation | RegisterMutation,
+    LoginMutationVariables | RegisterMutationVariables
+  >(isRegister ? RegisterDocument : LoginDocument, {
+    onCompleted: data => {
+      const authData = 'register' in data ? data?.register : data?.login
+
+      client.writeQuery({
+        query: GetMeDocument,
+        data: {
+          me: authData.user
+        }
+      })
+
+      toast.success(
+        isRegister ? 'Sign up successfully' : 'Sign in successfully',
+        {
+          id: 'auth-success'
+        }
+      )
+      client.resetStore()
+      router.replace(PAGES.DASHBOARD)
+    },
+    onError: err => {
+      toast.error(err.message, {
+        id: 'auth-error'
+      })
     }
-  )
-  
+  })
+
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isValid }
   } = useForm<IAuthFormInput>({
     mode: 'onChange',
@@ -53,15 +81,22 @@ function AuthForm({ type }: Props) {
   })
 
   const onSubmitForm: SubmitHandler<IAuthFormInput> = data => {
+    if (!captchaToken) {
+      toast.error('Please complete the captcha challenge', {
+        id: 'captcha-error'
+      })
+      return
+    }
+
     authMutation({
       variables: {
-        data: {
-          email: data.email,
-          password: data.password
+        data
+      },
+      context: {
+        headers: {
+          'cf-turnstile-token': captchaToken
         }
       }
-    }).finally(() => {
-      reset()
     })
   }
 
@@ -72,7 +107,7 @@ function AuthForm({ type }: Props) {
           {isRegister ? 'Sign up' : 'Sign In'}
         </h1>
         <form
-          className="space-y-4"
+          className="space-y-3"
           onSubmit={handleSubmit(onSubmitForm)}
         >
           <Input
@@ -112,6 +147,26 @@ function AuthForm({ type }: Props) {
               {errors.password.message}
             </p>
           )}
+
+          {!isRegister && (
+            <div className="-mt-2 block text-right">
+              <Link
+                href={PAGES.FORGOT_PASSWORD}
+                className="text-base underline hover:opacity-95"
+              >
+                Forgot password?
+              </Link>
+            </div>
+          )}
+
+          <div className="flex scale-80 justify-center">
+            <Turnstile
+              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+              onSuccess={token => setCaptchaToken(token)}
+              onExpire={() => setCaptchaToken(null)}
+              options={{ theme: 'light' }}
+            />
+          </div>
 
           <div className="text-center">
             <Button

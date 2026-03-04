@@ -3,15 +3,20 @@
 import { Bell, Headset } from 'lucide-react'
 import Link from 'next/link'
 
+import { useProfile } from '@/features/profile/hooks/useProfile'
+
 import NavMenu from '@/shared/components/custom-ui/nav-menu/NavMenu'
 import UserInfo from '@/shared/components/custom-ui/user-info/UserInfo'
 import { Button } from '@/shared/components/ui/button'
 
 import { PAGES } from '@/shared/config/page.config'
 
+import Logout from '../../auth/ui/Logout'
 import { navMenuItems } from './nav.data'
 
 function Header() {
+  const { user } = useProfile()
+
   return (
     <header className="flex justify-between p-5">
       <div className="flex items-center gap-8">
@@ -38,10 +43,11 @@ function Header() {
         >
           <Bell className="size-4.5" />
         </Button>
+        <Logout />
         <UserInfo
           avatarUrl="https://avatars.githubusercontent.com/u/0?y=1"
-          name="Jessica"
-          email="jesshamm@gmail.com"
+          name="Anonymous"
+          email={user?.email || ''}
         />
       </div>
     </header>

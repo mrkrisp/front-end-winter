@@ -1,0 +1,7 @@
+mutation GetNewTokens {
+  newTokens {
+    user {
+      id
+    }
+  }
+}

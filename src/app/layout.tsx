@@ -1,7 +1,6 @@
 import { SITE_NAME } from '@/shared/constants/seo.constants'
 import type { Metadata } from 'next'
 import { JetBrains_Mono } from 'next/font/google'
-import { Toaster } from 'react-hot-toast'
 
 import './globals.css'
 import { Provider } from './providers/Provider'
@@ -27,10 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${monoFont.variable} antialiased`}>
-        <Provider>
-          {children}
-          <Toaster position="top-center" />
-        </Provider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   )

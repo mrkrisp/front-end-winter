@@ -4,6 +4,7 @@ class PageConfig {
   private readonly AUTH = '/auth'
   readonly REGISTER = this.AUTH + '/register'
   readonly LOGIN = this.AUTH + '/login'
+  readonly FORGOT_PASSWORD = this.AUTH + '/forgot-password'
 
   readonly DASHBOARD = '/dashboard'
   // dashboard

@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client/react'
 
 import { GetMeDocument } from '@/__generated__/graphql'
 
-export function useProfile() {
+export function useGetMe() {
   const { data, loading } = useQuery(GetMeDocument, {
     fetchPolicy: 'cache-first',
     nextFetchPolicy: 'cache-first'

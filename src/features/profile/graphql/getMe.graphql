@@ -3,6 +3,10 @@ query GetMe {
     id
     email
     role
+    avatarUrl
     isEmailVerified
+    profile {
+      fullName
+    }
   }
 }

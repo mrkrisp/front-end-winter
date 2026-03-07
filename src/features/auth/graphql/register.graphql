@@ -4,6 +4,11 @@ mutation Register($data: AuthInput!) {
       id
       email
       role
+      isEmailVerified
+      avatarUrl
+      profile {
+        fullName
+      }
     }
   }
 }

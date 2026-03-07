@@ -12,8 +12,8 @@ function UserInfo({ avatarUrl, name, email }: Props) {
       <Image
         src={avatarUrl}
         alt={name}
-        width={36}
-        height={36}
+        width={48}
+        height={48}
         className="rounded-full"
       />
       <div>

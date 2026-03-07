@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["marsidev"]
+  "cSpell.words": ["marsidev"],
+  "postman.settings.dotenv-detection-notification-visibility": false
 }

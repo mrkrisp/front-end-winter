@@ -1,10 +1,10 @@
 'use client'
 
 import { useApolloClient, useMutation } from '@apollo/client/react'
-import { Turnstile } from '@marsidev/react-turnstile'
+import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 
@@ -37,6 +37,7 @@ function AuthForm({ type }: Props) {
   const client = useApolloClient()
 
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const ref = useRef<TurnstileInstance | null>(null)
 
   const [authMutation, { loading }] = useMutation<
     LoginMutation | RegisterMutation,
@@ -65,6 +66,8 @@ function AuthForm({ type }: Props) {
       toast.error(err.message, {
         id: 'auth-error'
       })
+      setCaptchaToken(null)
+      ref.current?.reset()
     }
   })
 
@@ -161,6 +164,7 @@ function AuthForm({ type }: Props) {
 
           <div className="flex scale-80 justify-center">
             <Turnstile
+              ref={ref}
               siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
               onSuccess={token => setCaptchaToken(token)}
               onExpire={() => setCaptchaToken(null)}

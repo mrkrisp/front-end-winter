@@ -3,7 +3,8 @@
 import { Bell, Headset } from 'lucide-react'
 import Link from 'next/link'
 
-import { useProfile } from '@/features/profile/hooks/useProfile'
+import VerifyEmailButton from '@/features/auth/ui/VerifyEmailButton'
+import { useGetMe } from '@/features/profile/hooks/useGetMe'
 
 import NavMenu from '@/shared/components/custom-ui/nav-menu/NavMenu'
 import UserInfo from '@/shared/components/custom-ui/user-info/UserInfo'
@@ -12,13 +13,13 @@ import { Button } from '@/shared/components/ui/button'
 import { PAGES } from '@/shared/config/page.config'
 
 import Logout from '../../auth/ui/Logout'
-import { navMenuItems } from './nav.data'
+import { navMenuItems } from './nav-menu.data'
 
 function Header() {
-  const { user } = useProfile()
+  const { user } = useGetMe()
 
   return (
-    <header className="flex justify-between p-5">
+    <header className="flex justify-between">
       <div className="flex items-center gap-8">
         <Link
           href={PAGES.DASHBOARD}
@@ -44,11 +45,18 @@ function Header() {
           <Bell className="size-4.5" />
         </Button>
         <Logout />
-        <UserInfo
-          avatarUrl="https://avatars.githubusercontent.com/u/0?y=1"
-          name="Anonymous"
-          email={user?.email || ''}
-        />
+        {!user?.isEmailVerified && (
+          <VerifyEmailButton email={user?.email || ''}>
+            Email unverified
+          </VerifyEmailButton>
+        )}
+        <Link href={PAGES.PROFILE}>
+          <UserInfo
+            avatarUrl={user?.avatarUrl || '/images/avatar-placeholder.png'}
+            name={user?.profile?.fullName || 'Anonymous'}
+            email={user?.email || ''}
+          />
+        </Link>
       </div>
     </header>
   )

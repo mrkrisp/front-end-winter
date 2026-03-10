@@ -1,17 +1,14 @@
 'use client'
 
-import { useQuery } from '@apollo/client/react'
-
 import { SkeletonLoader } from '@/shared/components/custom-ui/SkeletonLoader'
 
-import { GetProfileDocument } from '@/__generated__/graphql'
-
+import { useProfile } from '../hooks/useProfile'
 import ProfileForm from './ProfileForm'
 
 export function Profile() {
-  const { data, loading } = useQuery(GetProfileDocument)
+  const { data, isLoading } = useProfile()
 
-  if (loading || !data?.me) {
+  if (isLoading || !data?.me) {
     return (
       <div className="p-5">
         <div className="flex items-center justify-between px-3">

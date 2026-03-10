@@ -12,18 +12,21 @@ interface Props extends ComponentProps<'button'> {
 }
 
 function VerifyEmailButton({ email, children, className, ...props }: Props) {
-  const [reqVerifyEmail] = useMutation(RequestVerifyEmailDocument, {
-    onCompleted() {
-      toast.success('Verification url was received')
-    },
-    onError() {
-      toast.error('Some error!')
+  const [reqVerifyEmail, { loading }] = useMutation(
+    RequestVerifyEmailDocument,
+    {
+      onCompleted() {
+        toast.success('Verification url was received')
+      },
+      onError() {
+        toast.error('Some error!')
+      }
     }
-  })
+  )
 
   const onClickVerifyButton = () => {
     if (!email) {
-      toast.error('Incorrect email')
+      toast.error('Incorrect email!')
       return
     }
 
@@ -36,6 +39,7 @@ function VerifyEmailButton({ email, children, className, ...props }: Props) {
       variant={'destructive'}
       className={cn('rounded-xl', className)}
       onClick={onClickVerifyButton}
+      disabled={loading}
       {...props}
     >
       {children}

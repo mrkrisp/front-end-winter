@@ -1,0 +1,16 @@
+query GetAllRecipes($input: RecipesQueryInput!) {
+  recipes(input: $input) {
+    id
+    title
+    description
+    difficulty
+    cookingTime
+    likesCount
+    isLiked
+    calories
+    createdAt
+    tags {
+      name
+    }
+  }
+}

@@ -8,7 +8,13 @@ import toast from 'react-hot-toast'
 import HeadingWithIcon from '@/shared/components/custom-ui/heading-with-icon/HeadingWithIcon'
 import { Button } from '@/shared/components/ui/button'
 
-import { GetProfileQuery, UpdateProfileDocument } from '@/__generated__/graphql'
+import { removeTypename } from '@/shared/utils/removeTypename'
+
+import {
+  GetProfileDocument,
+  GetProfileQuery,
+  UpdateProfileDocument
+} from '@/__generated__/graphql'
 
 import { TProfileForm } from '../types/profile-update.types'
 import BodyMeasurementsForm from './BodyMeasurementsForm'
@@ -16,7 +22,7 @@ import GeneralInformationForm from './GeneralInformationForm'
 
 const ProfileForm = ({ data }: { data: GetProfileQuery }) => {
   const form = useForm<TProfileForm>({
-    mode: 'all',
+    mode: 'onChange',
     defaultValues: {
       avatarUrl: data?.me?.avatarUrl ?? '',
       email: data?.me?.email ?? '',
@@ -28,25 +34,37 @@ const ProfileForm = ({ data }: { data: GetProfileQuery }) => {
   const [updateProfile, { loading }] = useMutation(UpdateProfileDocument, {
     onCompleted() {
       toast.success('Profile updated')
+    },
+    update(cache, { data: mutationData }) {
+      const updated = mutationData?.updateProfile
+      if (!updated || !data.me) return
+
+      cache.writeQuery({
+        query: GetProfileDocument,
+        data: {
+          me: {
+            id: updated.id,
+            avatarUrl: updated.avatarUrl,
+            email: updated.email,
+            profile: updated.profile,
+            measurements: updated.measurements,
+            isEmailVerified: data.me.isEmailVerified
+          }
+        }
+      })
     }
   })
 
   const submit = form.handleSubmit(data => {
+    const cleanedProfile = removeTypename(data.profile)
+    const cleanedMeasurements = removeTypename(data.measurements)
+
     const cleanedData = {
       ...data,
-      profile: data.profile
-        ? Object.fromEntries(
-            Object.entries(data.profile).filter(([key]) => key !== '__typename')
-          )
-        : {},
-      measurements: data.measurements
-        ? Object.fromEntries(
-            Object.entries(data.measurements).filter(
-              ([key]) => key !== '__typename'
-            )
-          )
-        : {}
+      measurements: cleanedMeasurements,
+      profile: cleanedProfile
     }
+
     updateProfile({
       variables: {
         data: cleanedData

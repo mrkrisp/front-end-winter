@@ -42,7 +42,7 @@ function AvatarUpload({ value, onChange }: Props) {
         width={64}
         height={64}
         alt="avatar"
-        className="rounded-full object-cover"
+        className="h-16 w-16 rounded-full object-cover"
       />
       <label className="absolute -right-2 -bottom-2 rounded-full">
         <input

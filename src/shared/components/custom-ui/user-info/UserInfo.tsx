@@ -14,7 +14,7 @@ function UserInfo({ avatarUrl, name, email }: Props) {
         alt={name}
         width={48}
         height={48}
-        className="rounded-full"
+        className="h-12 w-12 rounded-full"
       />
       <div>
         <p className="font-medium">{name}</p>

@@ -5,7 +5,7 @@ import { UserCog } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 
-import HeadingWithIcon from '@/shared/components/custom-ui/heading-with-icon/HeadingWithIcon'
+import HeadingWithIcon from '@/shared/components/custom-ui/with-icon/heading-with-icon/HeadingWithIcon'
 import { Button } from '@/shared/components/ui/button'
 
 import { removeTypename } from '@/shared/utils/removeTypename'

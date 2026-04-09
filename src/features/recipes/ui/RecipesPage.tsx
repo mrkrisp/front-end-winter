@@ -1,20 +1,36 @@
-import { ChefHat, Star } from 'lucide-react'
+'use client'
 
-import HeadingWithIcon from '@/shared/components/custom-ui/heading-with-icon/HeadingWithIcon'
+import { useQueryState } from 'nuqs'
 
-import RecipesList from './RecipesList/RecipesList'
+import { useDebounce } from '@/shared/hooks/useDebounce'
+
+import { RecipesBanners } from './recipes-banners/RecipesBanners'
+import { RecipesCatalog } from './recipes-catalog/RecipesCatalog'
+import { RecipesSidebar } from './recipes-sidebar/RecipesSidebar'
 
 function RecipesPage() {
+  const [searchTerm, setSearchTerm] = useQueryState('q', {
+    defaultValue: ''
+  })
+  const [filter, setFilter] = useQueryState('f', {
+    defaultValue: ''
+  })
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 400)
+
   return (
-    <div className="space-y-3">
-      <div className="mb-6 space-y-3">
-        <HeadingWithIcon Icon={ChefHat}>Recommended</HeadingWithIcon>
-        <RecipesList sortBy="recommended" />
-      </div>
-      <div className="space-y-3">
-        <HeadingWithIcon Icon={Star}>Popular</HeadingWithIcon>
-        <RecipesList sortBy="popular" />
-      </div>
+    <div className="grid grid-cols-[1fr_minmax(0,5fr)]">
+      <RecipesSidebar
+        filter={filter}
+        setFilter={setFilter}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
+
+      <main>
+        <RecipesBanners />
+        <RecipesCatalog />
+      </main>
     </div>
   )
 }

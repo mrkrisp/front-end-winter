@@ -135,6 +135,10 @@ function BodyMeasurementsForm({
                   value={field.value}
                   onChange={field.onChange}
                   options={[
+                    {
+                      label: 'Sedentary',
+                      value: ActivityLevel.Sedentary
+                    },
                     { label: 'Lightly active', value: ActivityLevel.Light },
                     {
                       label: 'Moderately active',
@@ -142,10 +146,6 @@ function BodyMeasurementsForm({
                     },
                     { label: 'Active', value: ActivityLevel.Active },
 
-                    {
-                      label: 'Sedentary',
-                      value: ActivityLevel.Sedentary
-                    },
                     { label: 'Very active', value: ActivityLevel.VeryActive }
                   ]}
                 />

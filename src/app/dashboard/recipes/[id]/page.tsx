@@ -1,10 +1,11 @@
-import { NO_INDEX_PAGE } from '@/shared/constants/seo.constants'
 import type { Metadata } from 'next'
+
+import { RecipeDetails } from '@/features/recipe/RecipeDetails'
 
 export async function generateMetadata(): Promise<Metadata> {
   return { title: 'Recipe' }
 }
 
 export default function Page() {
-  return <div>Recipe detail</div>
+  return <RecipeDetails />
 }

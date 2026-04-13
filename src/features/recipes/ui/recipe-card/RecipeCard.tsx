@@ -1,61 +1,61 @@
-import { VariantProps, cva } from 'class-variance-authority'
-import { Clock5, Flame } from 'lucide-react'
-import Image from 'next/image'
-
-import LikeButton from '@/features/reactions/likes/LikeButton'
-
-import BadgeWithIcon from '@/shared/components/custom-ui/with-icon/badge-with-icon/BadgeWithIcon'
-import DifficultyWithIcon from '@/shared/components/custom-ui/with-icon/difficulty-with-icon/DifficultyWithIcon'
+import { EllipsisVertical } from 'lucide-react'
 
 import { GetAllRecipesQuery } from '@/__generated__/graphql'
 
-const recipeCardVariants = cva('bg-white rounded-3xl flex flex-col gap-1', {
-  variants: {
-    size: {
-      default: 'p-3.5 w-75',
-      sm: 'p-3 w-60'
-    }
-  },
-  defaultVariants: {
-    size: 'default'
-  }
-})
+import {
+  recipeCardDescriptionVariants,
+  recipeCardTitleVariants,
+  recipeCardVariants
+} from './styles/recipe-card.styles'
+import { TRecipeCardSize } from './types/recipe-card.types'
+import { RecipeCardFooter } from './ui/RecipeCardFooter'
+import { RecipeCardImage } from './ui/RecipeCardImage'
+import { RecipeCardMetaBadges } from './ui/badges/RecipeCardMetaBadges'
 
 interface Props {
-  recipe: GetAllRecipesQuery['recipes'][0]
-  size?: VariantProps<typeof recipeCardVariants>['size']
+  recipe: GetAllRecipesQuery['recipes'][number]
+  size?: TRecipeCardSize
 }
 
 export function RecipeCard({ recipe, size }: Props) {
   return (
     <div className={recipeCardVariants({ size })}>
-      <div className="flex items-center justify-center">
-        <Image
-          src={'/images/recipe-placeholder2.jpg'}
-          width={320}
-          height={140}
-          alt="recipe image"
-          className="mb-2 h-35 w-full rounded-2xl object-cover"
-        />
+      <RecipeCardImage
+        slug={recipe.slug}
+        url={'/images/recipe-placeholder2.jpg'}
+        title={recipe.title}
+        size={size}
+      />
+      <div className="mt-3 flex items-center justify-between gap-3">
+        <h3 className={recipeCardTitleVariants({ size })}>{recipe.title}</h3>
+        <button
+          type="button"
+          className="shrink-0 text-black/40"
+          aria-label="More actions"
+          onClick={e => e.preventDefault()}
+        >
+          <EllipsisVertical className={size === 'sm' ? 'size-3.5' : 'size-4'} />
+        </button>
       </div>
-      <h3 className="mb-0 truncate font-semibold text-nowrap">
-        {recipe.title}
-      </h3>
-      <p className="text-muted-foreground m-0 line-clamp-2 text-sm">
+
+      <p className={recipeCardDescriptionVariants({ size })}>
         {recipe.description}
       </p>
-      <div className="mb-2 flex items-center gap-1">
-        <BadgeWithIcon Icon={Flame}>{recipe.calories}kcal</BadgeWithIcon>
-        <BadgeWithIcon Icon={Clock5}>{recipe.cookingTime}min</BadgeWithIcon>
-      </div>
-      <div className="flex justify-between">
-        <DifficultyWithIcon difficulty={recipe.difficulty} />
-        <LikeButton
-          id={recipe.id}
-          likesCount={recipe.likesCount}
-          isLiked={recipe.isLiked}
-        />
-      </div>
+
+      <RecipeCardMetaBadges
+        size={size}
+        cookingTime={recipe.cookingTime}
+        calories={recipe.calories}
+      />
+
+      <RecipeCardFooter
+        id={recipe.id}
+        likes={recipe.likesCount}
+        isLiked={recipe.isLiked}
+        difficulty={recipe.difficulty}
+        views={14683}
+        size={size}
+      />
     </div>
   )
 }

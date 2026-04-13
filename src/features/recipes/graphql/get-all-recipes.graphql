@@ -12,5 +12,6 @@ query GetAllRecipes($input: RecipesQueryInput!) {
     tags {
       name
     }
+    slug
   }
 }

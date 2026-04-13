@@ -6,13 +6,15 @@ import { GetAllRecipesDocument } from '@/__generated__/graphql'
 
 import { RecipeItemSkeleton } from '../RecipeItemSkeleton'
 import { RecipeCard } from '../recipe-card/RecipeCard'
+import { TRecipeCardSize } from '../recipe-card/types/recipe-card.types'
 
 interface Props {
   sortBy: 'new' | 'recommended' | 'popular'
   searchTerm?: string
+  size?: TRecipeCardSize
 }
 
-function RecipesList({ sortBy, searchTerm }: Props) {
+function RecipesList({ sortBy, searchTerm, size }: Props) {
   const { data, loading } = useQuery(GetAllRecipesDocument, {
     variables: {
       input: {
@@ -41,6 +43,7 @@ function RecipesList({ sortBy, searchTerm }: Props) {
           <RecipeCard
             key={recipe.id}
             recipe={recipe}
+            size={size}
           />
         )
       })}

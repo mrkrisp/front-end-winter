@@ -26,7 +26,7 @@ type Documents = {
     "query GetMe {\n  me {\n    id\n    email\n    role\n    avatarUrl\n    isEmailVerified\n    profile {\n      fullName\n    }\n  }\n}": typeof types.GetMeDocument,
     "mutation UpdateProfile($data: UserUpdateInput!) {\n  updateProfile(data: $data) {\n    id\n    email\n    avatarUrl\n    profile {\n      age\n      bio\n      fullName\n      gender\n    }\n    measurements {\n      heightCm\n      weightKg\n      waistCm\n      armCm\n      chestCm\n      thighCm\n      activityLevel\n      nutritionGoal\n      goalWeightKg\n    }\n  }\n}": typeof types.UpdateProfileDocument,
     "mutation ToggleLike($recipeId: String!) {\n  toggleLike(recipeId: $recipeId) {\n    liked\n  }\n}": typeof types.ToggleLikeDocument,
-    "query GetAllRecipes($input: RecipesQueryInput!) {\n  recipes(input: $input) {\n    id\n    title\n    description\n    difficulty\n    cookingTime\n    likesCount\n    isLiked\n    calories\n    createdAt\n    tags {\n      name\n    }\n  }\n}": typeof types.GetAllRecipesDocument,
+    "query GetAllRecipes($input: RecipesQueryInput!) {\n  recipes(input: $input) {\n    id\n    title\n    description\n    difficulty\n    cookingTime\n    likesCount\n    isLiked\n    calories\n    createdAt\n    tags {\n      name\n    }\n    slug\n  }\n}": typeof types.GetAllRecipesDocument,
 };
 const documents: Documents = {
     "mutation GetNewTokens {\n  newTokens {\n    user {\n      id\n    }\n  }\n}": types.GetNewTokensDocument,
@@ -41,7 +41,7 @@ const documents: Documents = {
     "query GetMe {\n  me {\n    id\n    email\n    role\n    avatarUrl\n    isEmailVerified\n    profile {\n      fullName\n    }\n  }\n}": types.GetMeDocument,
     "mutation UpdateProfile($data: UserUpdateInput!) {\n  updateProfile(data: $data) {\n    id\n    email\n    avatarUrl\n    profile {\n      age\n      bio\n      fullName\n      gender\n    }\n    measurements {\n      heightCm\n      weightKg\n      waistCm\n      armCm\n      chestCm\n      thighCm\n      activityLevel\n      nutritionGoal\n      goalWeightKg\n    }\n  }\n}": types.UpdateProfileDocument,
     "mutation ToggleLike($recipeId: String!) {\n  toggleLike(recipeId: $recipeId) {\n    liked\n  }\n}": types.ToggleLikeDocument,
-    "query GetAllRecipes($input: RecipesQueryInput!) {\n  recipes(input: $input) {\n    id\n    title\n    description\n    difficulty\n    cookingTime\n    likesCount\n    isLiked\n    calories\n    createdAt\n    tags {\n      name\n    }\n  }\n}": types.GetAllRecipesDocument,
+    "query GetAllRecipes($input: RecipesQueryInput!) {\n  recipes(input: $input) {\n    id\n    title\n    description\n    difficulty\n    cookingTime\n    likesCount\n    isLiked\n    calories\n    createdAt\n    tags {\n      name\n    }\n    slug\n  }\n}": types.GetAllRecipesDocument,
 };
 
 /**
@@ -109,7 +109,7 @@ export function graphql(source: "mutation ToggleLike($recipeId: String!) {\n  to
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query GetAllRecipes($input: RecipesQueryInput!) {\n  recipes(input: $input) {\n    id\n    title\n    description\n    difficulty\n    cookingTime\n    likesCount\n    isLiked\n    calories\n    createdAt\n    tags {\n      name\n    }\n  }\n}"): (typeof documents)["query GetAllRecipes($input: RecipesQueryInput!) {\n  recipes(input: $input) {\n    id\n    title\n    description\n    difficulty\n    cookingTime\n    likesCount\n    isLiked\n    calories\n    createdAt\n    tags {\n      name\n    }\n  }\n}"];
+export function graphql(source: "query GetAllRecipes($input: RecipesQueryInput!) {\n  recipes(input: $input) {\n    id\n    title\n    description\n    difficulty\n    cookingTime\n    likesCount\n    isLiked\n    calories\n    createdAt\n    tags {\n      name\n    }\n    slug\n  }\n}"): (typeof documents)["query GetAllRecipes($input: RecipesQueryInput!) {\n  recipes(input: $input) {\n    id\n    title\n    description\n    difficulty\n    cookingTime\n    likesCount\n    isLiked\n    calories\n    createdAt\n    tags {\n      name\n    }\n    slug\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

@@ -14,6 +14,8 @@ class PageConfig {
   readonly ANALYTICS = this.DASHBOARD + '/analytics'
   readonly ORDER_GROCERIES = this.DASHBOARD + '/order-groceries'
   readonly RECIPES = this.DASHBOARD + '/recipes'
+
+  readonly RECIPE_DETAILS = (slug: string) => this.RECIPES + `/${slug}`
 }
 
 export const PAGES = new PageConfig()
